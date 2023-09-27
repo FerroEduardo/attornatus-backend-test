@@ -334,9 +334,11 @@ class PersonTest {
 
     @Test
     void setMainAddresses() throws Exception {
+        // Create address
+        String personId = "1";
         MvcResult mvcResult = mockMvc
                 .perform(
-                        post("/person/1/address")
+                        post("/person/" + personId + "/address")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                                  {
@@ -359,13 +361,92 @@ class PersonTest {
         assertEquals("547-C", root.get("number").asText());
         assertEquals("São Paulo", root.get("city").asText());
 
-
+        // Set address as main
         mockMvc
                 .perform(
-                        post("/person/1/address/main/" + addressId)
+                        post("/person/" + personId + "/address/main/" + addressId)
                 )
                 .andExpect(status().isNoContent())
                 .andReturn();
+
+        mvcResult = mockMvc.perform(get("/person/1")).andExpect(status().isOk()).andReturn();
+        root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertFalse(root.isArray());
+
+        JsonNode mainAddress = root.get("mainAddress");
+        assertNotNull(mainAddress);
+        assertEquals(addressId, mainAddress.get("id").asInt());
+        assertEquals("Avenida das Palmeiras", mainAddress.get("logradouro").asText());
+        assertEquals("87456321", mainAddress.get("cep").asText());
+        assertEquals("547-C", mainAddress.get("number").asText());
+        assertEquals("São Paulo", mainAddress.get("city").asText());
+    }
+
+    @Test
+    void removeMainAddresses() throws Exception {
+        // Create address
+        String personId = "1";
+        MvcResult mvcResult = mockMvc
+                .perform(
+                        post("/person/" + personId + "/address")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                 {
+                                                     "logradouro": "Avenida das Palmeiras",
+                                                     "cep": "87456321",
+                                                     "number": "547-C",
+                                                     "city": "São Paulo"
+                                                 }
+                                                 """)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+        JsonNode root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertFalse(root.isArray());
+
+        assertNotNull(root.get("id"));
+        int addressId = root.get("id").asInt();
+        assertEquals("Avenida das Palmeiras", root.get("logradouro").asText());
+        assertEquals("87456321", root.get("cep").asText());
+        assertEquals("547-C", root.get("number").asText());
+        assertEquals("São Paulo", root.get("city").asText());
+
+        // Set address as main
+        mockMvc
+                .perform(
+                        post("/person/" + personId + "/address/main/" + addressId)
+                )
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        // Check main address values
+        mvcResult = mockMvc.perform(get("/person/1")).andExpect(status().isOk()).andReturn();
+        root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertFalse(root.isArray());
+
+        JsonNode mainAddress = root.get("mainAddress");
+        assertNotNull(mainAddress);
+        assertEquals(addressId, mainAddress.get("id").asInt());
+        assertEquals("Avenida das Palmeiras", mainAddress.get("logradouro").asText());
+        assertEquals("87456321", mainAddress.get("cep").asText());
+        assertEquals("547-C", mainAddress.get("number").asText());
+        assertEquals("São Paulo", mainAddress.get("city").asText());
+
+        // Remove main address
+        mockMvc
+                .perform(
+                        delete("/person/" + personId + "/address/main")
+                )
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        // Check main address was removed
+        mvcResult = mockMvc.perform(get("/person/1")).andExpect(status().isOk()).andReturn();
+        root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertFalse(root.isArray());
+
+        mainAddress = root.get("mainAddress");
+        assertTrue(mainAddress.isNull());
     }
 
 }

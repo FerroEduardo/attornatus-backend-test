@@ -50,4 +50,9 @@ public class AddressService {
         logger.info("Defining address '{}' as main to person '{}'", addressId, personId);
         personRepository.save(person);
     }
+
+    @Transactional
+    public void removeMainAddress(Long personId) {
+        personRepository.removeMainAddressByPersonId(personId);
+    }
 }

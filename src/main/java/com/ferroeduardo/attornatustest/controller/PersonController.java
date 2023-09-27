@@ -132,4 +132,17 @@ public class PersonController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("{personId}/address/main")
+    public ResponseEntity<Object> removeMainAddress(
+            @Valid @PathVariable @NotNull @PositiveOrZero Long personId
+    ) {
+        if (!personService.exists(personId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "person not found"));
+        }
+
+        addressService.removeMainAddress(personId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
