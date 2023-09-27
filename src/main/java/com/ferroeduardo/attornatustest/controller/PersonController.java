@@ -5,9 +5,8 @@ import com.ferroeduardo.attornatustest.dto.IndexPersonDTO;
 import com.ferroeduardo.attornatustest.dto.PersonDTO;
 import com.ferroeduardo.attornatustest.entity.Address;
 import com.ferroeduardo.attornatustest.entity.Person;
-import com.ferroeduardo.attornatustest.request.EditPersonRequest;
-import com.ferroeduardo.attornatustest.request.SavePersonAddressRequest;
-import com.ferroeduardo.attornatustest.request.SavePersonRequest;
+import com.ferroeduardo.attornatustest.request.AddressValidationRequest;
+import com.ferroeduardo.attornatustest.request.PersonValidationRequest;
 import com.ferroeduardo.attornatustest.service.AddressService;
 import com.ferroeduardo.attornatustest.service.PersonService;
 import jakarta.validation.Valid;
@@ -55,7 +54,7 @@ public class PersonController {
     }
 
     @PostMapping
-    public ResponseEntity<PersonDTO> save(@Valid @RequestBody SavePersonRequest request) {
+    public ResponseEntity<PersonDTO> save(@Valid @RequestBody PersonValidationRequest request) {
         Person person = new Person();
         person.setName(request.getName());
         person.setBirthDate(request.getBirthDate());
@@ -69,7 +68,7 @@ public class PersonController {
     @PutMapping("{personId}")
     public ResponseEntity<PersonDTO> edit(
             @Valid @PathVariable @NotNull @PositiveOrZero Long personId,
-            @Valid @RequestBody EditPersonRequest request
+            @Valid @RequestBody PersonValidationRequest request
     ) {
         if (!personService.exists(personId)) {
             return ResponseEntity.notFound().build();
@@ -98,7 +97,7 @@ public class PersonController {
     @PostMapping("{personId}/address")
     public ResponseEntity<Object> saveAddress(
             @Valid @PathVariable @NotNull @PositiveOrZero Long personId,
-            @Valid @RequestBody SavePersonAddressRequest request
+            @Valid @RequestBody AddressValidationRequest request
     ) {
         if (!personService.exists(personId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "person not found"));

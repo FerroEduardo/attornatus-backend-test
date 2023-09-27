@@ -306,7 +306,7 @@ class PersonTest {
     }
 
     @Test
-    void saveAddresses() throws Exception {
+    void saveAddress() throws Exception {
         MvcResult mvcResult = mockMvc
                 .perform(
                         post("/person/1/address")
@@ -330,6 +330,32 @@ class PersonTest {
         assertEquals("87456321", root.get("cep").asText());
         assertEquals("547-C", root.get("number").asText());
         assertEquals("São Paulo", root.get("city").asText());
+    }
+
+    @Test
+    void saveInvalidAddress() throws Exception {
+        MvcResult mvcResult = mockMvc
+                .perform(
+                        post("/person/1/address")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                 {
+                                                     "logradouro": "Avenida das PalmeirasAvenida das PalmeirasAvenida das PalmeirasAvenida das PalmeirasAvenida das Palmeiras",
+                                                     "cep": "8745632187456321",
+                                                     "number": "547-C547-C547-C547-C547-C",
+                                                     "city": null
+                                                 }
+                                                 """)
+                )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        JsonNode root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertFalse(root.isArray());
+
+        assertEquals("size must be between 1 and 100", root.get("logradouro").asText());
+        assertEquals("size must be between 8 and 8", root.get("cep").asText());
+        assertEquals("size must be between 1 and 20", root.get("number").asText());
+        assertEquals("must not be blank", root.get("city").asText());
     }
 
     @Test

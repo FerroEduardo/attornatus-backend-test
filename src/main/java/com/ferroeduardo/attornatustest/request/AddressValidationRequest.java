@@ -3,7 +3,7 @@ package com.ferroeduardo.attornatustest.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class SavePersonAddressRequest {
+public class AddressValidationRequest {
 
     @NotBlank
     @Size(min = 1, max = 100)
@@ -21,7 +21,7 @@ public class SavePersonAddressRequest {
     @Size(min = 1, max = 50)
     private String city;
 
-    public SavePersonAddressRequest() {
+    public AddressValidationRequest() {
     }
 
     public String getLogradouro() {

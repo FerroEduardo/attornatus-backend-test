@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-public class EditPersonRequest {
+public class PersonValidationRequest {
 
     @NotBlank
     @Size(min = 1, max = 100)
@@ -19,7 +19,7 @@ public class EditPersonRequest {
     @NotNull
     private LocalDate birthDate;
 
-    public EditPersonRequest() {
+    public PersonValidationRequest() {
     }
 
     public String getName() {

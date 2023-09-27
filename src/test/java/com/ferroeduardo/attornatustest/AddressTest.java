@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -77,5 +77,33 @@ public class AddressTest {
         assertFalse(addresses.isNull());
         assertTrue(addresses.isArray());
         assertTrue(addresses.isEmpty());
+    }
+
+    @Test
+    void updateAddress() throws Exception {
+        String addressId = "1";
+        MvcResult mvcResult = mockMvc
+                .perform(
+                        put("/address/" + addressId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                 {
+                                                     "logradouro": "Estrada do Vereador",
+                                                     "cep": "25478601",
+                                                     "number": "GA-002",
+                                                     "city": "Palmas"
+                                                 }
+                                                 """)
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+        JsonNode root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
+        assertFalse(root.isArray());
+
+        assertEquals(1, root.get("id").asInt());
+        assertEquals("Estrada do Vereador", root.get("logradouro").asText());
+        assertEquals("25478601", root.get("cep").asText());
+        assertEquals("GA-002", root.get("number").asText());
+        assertEquals("Palmas", root.get("city").asText());
     }
 }

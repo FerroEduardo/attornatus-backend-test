@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -62,5 +63,14 @@ public class AddressService {
         logger.info("Deleting address '{}'", addressId);
         personRepository.removeMainAddressByAddressId(addressId);
         addressRepository.deleteById(addressId);
+    }
+
+    @Transactional
+    public Address update(Address address) {
+        return addressRepository.save(address);
+    }
+
+    public Optional<Address> findById(Long addressId) {
+        return addressRepository.findById(addressId);
     }
 }
