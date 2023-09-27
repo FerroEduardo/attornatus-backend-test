@@ -76,4 +76,15 @@ public class Address {
     public void setPerson(Person person) {
         this.person = person;
     }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+               "id=" + id +
+               ", logradouro='" + logradouro + '\'' +
+               ", cep='" + cep + '\'' +
+               ", number='" + number + '\'' +
+               ", city='" + city + '\'' +
+               '}';
+    }
 }

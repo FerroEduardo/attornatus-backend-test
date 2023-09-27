@@ -2,6 +2,8 @@ package com.ferroeduardo.attornatustest.service;
 
 import com.ferroeduardo.attornatustest.entity.Person;
 import com.ferroeduardo.attornatustest.repository.PersonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 public class PersonService {
 
     private final PersonRepository repository;
+    private final Logger logger = LoggerFactory.getLogger(PersonService.class);
 
     public PersonService(PersonRepository repository) {
         this.repository = repository;
@@ -32,6 +35,7 @@ public class PersonService {
 
     @Transactional
     public Person save(Person person) {
+        logger.info("Saving person '{}'", person);
         return repository.save(person);
     }
 }

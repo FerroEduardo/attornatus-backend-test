@@ -4,6 +4,8 @@ import com.ferroeduardo.attornatustest.entity.Address;
 import com.ferroeduardo.attornatustest.entity.Person;
 import com.ferroeduardo.attornatustest.repository.AddressRepository;
 import com.ferroeduardo.attornatustest.repository.PersonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
     private final PersonRepository  personRepository;
+    private final Logger logger = LoggerFactory.getLogger(AddressService.class);
 
     public AddressService(AddressRepository addressRepository, PersonRepository personRepository) {
         this.addressRepository = addressRepository;
@@ -30,6 +33,7 @@ public class AddressService {
         Person person = personRepository.getReferenceById(personId);
         address.setPerson(person);
 
+        logger.info("Saving address '{}'", address);
         return addressRepository.save(address);
     }
 
@@ -43,6 +47,7 @@ public class AddressService {
         Address address = addressRepository.getReferenceById(addressId);
         person.setMainAddress(address);
 
+        logger.info("Defining address '{}' as main to person '{}'", addressId, personId);
         personRepository.save(person);
     }
 }

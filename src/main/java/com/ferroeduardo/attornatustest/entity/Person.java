@@ -71,4 +71,15 @@ public class Person {
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", birthdate=" + birthdate +
+               ", mainAddress=" + mainAddress +
+               ", addresses=" + addresses +
+               '}';
+    }
 }
