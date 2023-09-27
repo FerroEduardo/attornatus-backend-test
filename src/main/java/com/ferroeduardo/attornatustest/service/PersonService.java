@@ -38,4 +38,10 @@ public class PersonService {
         logger.info("Saving person '{}'", person);
         return repository.save(person);
     }
+
+    @Transactional
+    public void deleteById(Long personId) {
+        logger.info("Deleting person '{}'", personId);
+        repository.deleteById(personId);
+    }
 }

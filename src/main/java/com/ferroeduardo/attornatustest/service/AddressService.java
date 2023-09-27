@@ -53,11 +53,13 @@ public class AddressService {
 
     @Transactional
     public void removeMainAddress(Long personId) {
+        logger.info("Removing main address from person '{}'", personId);
         personRepository.removeMainAddressByPersonId(personId);
     }
 
     @Transactional
     public void deleteById(Long addressId) {
+        logger.info("Deleting address '{}'", addressId);
         personRepository.removeMainAddressByAddressId(addressId);
         addressRepository.deleteById(addressId);
     }

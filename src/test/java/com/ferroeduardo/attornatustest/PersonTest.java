@@ -443,4 +443,18 @@ class PersonTest {
         assertTrue(mainAddress.isNull());
     }
 
+    @Test
+    void deletePerson() throws Exception {
+        // Delete person
+        String personId = "1";
+        mockMvc
+                .perform(delete("/person/" + personId))
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        // Check user does not exist
+        mockMvc.perform(get("/person/" + personId)).andExpect(status().isNotFound());
+        mockMvc.perform(get("/person/" + personId + "/address")).andExpect(status().isNotFound());
+    }
+
 }
