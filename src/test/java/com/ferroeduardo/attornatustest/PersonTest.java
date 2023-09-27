@@ -389,7 +389,7 @@ class PersonTest {
 
         // Set address as main
         mockMvc
-                .perform(post("/person/" + personId + "/address/main/" + addressId))
+                .perform(post("/person/" + personId + "/address/" + addressId + "/main"))
                 .andExpect(status().isNoContent())
                 .andReturn();
 
@@ -437,7 +437,7 @@ class PersonTest {
 
         // Set address as main
         mockMvc
-                .perform(post("/person/" + personId + "/address/main/" + addressId))
+                .perform(post("/person/" + personId + "/address/" + addressId + "/main"))
                 .andExpect(status().isNoContent())
                 .andReturn();
 

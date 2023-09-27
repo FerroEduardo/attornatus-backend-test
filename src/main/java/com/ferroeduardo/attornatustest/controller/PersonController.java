@@ -115,7 +115,7 @@ public class PersonController {
         return ResponseEntity.created(location).body(body);
     }
 
-    @PostMapping("{personId}/address/main/{addressId}")
+    @PostMapping("{personId}/address/{addressId}/main")
     public ResponseEntity<Object> setMainAddress(
             @Valid @PathVariable @NotNull @PositiveOrZero Long personId,
             @Valid @PathVariable @NotNull @PositiveOrZero Long addressId
