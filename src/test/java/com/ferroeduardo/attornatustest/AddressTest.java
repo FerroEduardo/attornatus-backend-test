@@ -15,7 +15,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -61,16 +60,14 @@ public class AddressTest {
     void removeAddress() throws Exception {
         // Delete address
         String addressId = "1";
-        MvcResult mvcResult = mockMvc
+        mockMvc
                 .perform(delete("/address/" + addressId))
                 .andExpect(status().isNoContent())
                 .andReturn();
-        JsonNode root = objectMapper.readTree(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
-        assertFalse(root.isArray());
 
         // Check user exists and address was removed
-        mvcResult = mockMvc.perform(get("/person/1")).andExpect(status().isOk()).andReturn();
-        root = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+        MvcResult mvcResult = mockMvc.perform(get("/person/1")).andExpect(status().isOk()).andReturn();
+        JsonNode  root      = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
         assertFalse(root.isArray());
 
         JsonNode mainAddress = root.get("mainAddress");
