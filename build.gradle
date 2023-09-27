@@ -41,3 +41,7 @@ testing {
 tasks.named('check') {
     dependsOn(testing.suites.integrationTest)
 }
+
+bootJar {
+    archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+}

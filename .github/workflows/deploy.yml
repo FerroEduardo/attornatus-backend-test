@@ -1,0 +1,87 @@
+name: deploy
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+
+      - name: 'Wait for SSH'
+        run: |
+          SLEEP=1
+          TRIES=0
+          MAX_TRIES=10
+          while ! nc -w5 -z ${{ secrets.INSTANCE_IP }} 22; do
+            echo "SSH not available..."
+            if [[ $TRIES -eq $MAX_TRIES ]]; then
+              echo "Max tries reached, exiting"
+              exit 1
+            fi
+            ((TRIES += 1))
+            sleep $SLEEP
+          done; echo "SSH ready!"
+
+      - name: 'Download latest JDK 21'
+        run: wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz
+
+      - name: 'Set up JDK'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'jdkfile'
+          jdkFile: jdk-21_linux-x64_bin.tar.gz
+          cache: 'gradle'
+
+      - name: 'Grant execute permission for gradlew'
+        run: chmod +x gradlew
+
+      - name: 'Build and Generate JAR'
+        run: ./gradlew bootJar --no-daemon
+
+      - name: 'Creating start file'
+        run: |
+          echo -e '#!/bin/bash\n' > start.sh
+          echo -e '\n/home/deploy/.sdkman/candidates/java/current/bin/java -Xmx50m -jar attornatus-test.jar --server.port=7745' >> start.sh
+        shell: bash
+        working-directory: build/libs
+
+      - name: 'Stop and Delete Previous App'
+        uses: appleboy/ssh-action@master
+        continue-on-error: true
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            kill $(ps aux | grep 'java .* -jar .*attornatus-test.*\.jar' | awk '{print $2}')
+            rm -rf /var/www/tech-tests/attornatus/attornatus-test.jar
+
+      - name: 'Push Repo'
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          source: "build/libs/*"
+          target: /var/www/tech-tests/attornatus
+          strip_components: 2
+
+      - name: 'Run'
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.INSTANCE_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.VM_SSH_PRIVATE_KEY_PASSPHRASE }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/tech-tests/attornatus
+            nohup /bin/bash start.sh > nohup.out 2> nohup.err < /dev/null &
+            echo 'Done'
