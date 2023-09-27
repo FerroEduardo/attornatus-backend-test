@@ -1,0 +1,160 @@
+{
+  "info": {
+    "_postman_id": "98cef8b2-beef-46d3-8514-1c33d3073dca",
+    "name": "attornatus",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "13409133"
+  },
+  "item": [
+    {
+      "name": "person",
+      "item": [
+        {
+          "name": "address",
+          "item": [
+            {
+              "name": "index",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{host}}/person/1/address"
+              },
+              "response": []
+            },
+            {
+              "name": "save",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"logradouro\": \"Avenida das Palmeiras\",\r\n    \"cep\": \"87456321\",\r\n    \"number\": \"547-C\",\r\n    \"city\": \"São Paulo\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{host}}/person/1/address"
+              },
+              "response": []
+            },
+            {
+              "name": "set main",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": "{{host}}/person/1/address/1/main"
+              },
+              "response": []
+            },
+            {
+              "name": "remove main",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{host}}/person/1/address/main"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "index",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{host}}/person"
+          },
+          "response": []
+        },
+        {
+          "name": "show",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{host}}/person/1"
+          },
+          "response": []
+        },
+        {
+          "name": "save",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"eduardo\",\r\n    \"birthDate\": \"2000-08-29\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{host}}/person"
+          },
+          "response": []
+        },
+        {
+          "name": "update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"eduardo2\",\r\n    \"birthDate\": \"2000-08-99\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{host}}/person/1"
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{host}}/person/1"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "address",
+      "item": [
+        {
+          "name": "delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{host}}/address/2"
+          },
+          "response": []
+        },
+        {
+          "name": "update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"logradouro\": \"bbbbbbbbb\",\r\n    \"cep\": \"87456321\",\r\n    \"number\": \"547-C\",\r\n    \"city\": \"São Paulo\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{host}}/address/1"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
