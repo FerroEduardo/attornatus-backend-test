@@ -22,7 +22,9 @@ public class Address {
     @Column(name = "city", nullable = false, length = 50)
     private String city;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
+            fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 

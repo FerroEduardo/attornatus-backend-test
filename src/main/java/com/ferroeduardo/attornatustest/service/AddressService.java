@@ -55,4 +55,10 @@ public class AddressService {
     public void removeMainAddress(Long personId) {
         personRepository.removeMainAddressByPersonId(personId);
     }
+
+    @Transactional
+    public void deleteById(Long addressId) {
+        personRepository.removeMainAddressByAddressId(addressId);
+        addressRepository.deleteById(addressId);
+    }
 }

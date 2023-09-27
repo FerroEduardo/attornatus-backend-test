@@ -333,7 +333,7 @@ class PersonTest {
     }
 
     @Test
-    void setMainAddresses() throws Exception {
+    void setMainAddress() throws Exception {
         // Create address
         String personId = "1";
         MvcResult mvcResult = mockMvc
@@ -363,9 +363,7 @@ class PersonTest {
 
         // Set address as main
         mockMvc
-                .perform(
-                        post("/person/" + personId + "/address/main/" + addressId)
-                )
+                .perform(post("/person/" + personId + "/address/main/" + addressId))
                 .andExpect(status().isNoContent())
                 .andReturn();
 
@@ -383,7 +381,7 @@ class PersonTest {
     }
 
     @Test
-    void removeMainAddresses() throws Exception {
+    void removeMainAddress() throws Exception {
         // Create address
         String personId = "1";
         MvcResult mvcResult = mockMvc
@@ -413,9 +411,7 @@ class PersonTest {
 
         // Set address as main
         mockMvc
-                .perform(
-                        post("/person/" + personId + "/address/main/" + addressId)
-                )
+                .perform(post("/person/" + personId + "/address/main/" + addressId))
                 .andExpect(status().isNoContent())
                 .andReturn();
 
@@ -434,9 +430,7 @@ class PersonTest {
 
         // Remove main address
         mockMvc
-                .perform(
-                        delete("/person/" + personId + "/address/main")
-                )
+                .perform(delete("/person/" + personId + "/address/main"))
                 .andExpect(status().isNoContent())
                 .andReturn();
 

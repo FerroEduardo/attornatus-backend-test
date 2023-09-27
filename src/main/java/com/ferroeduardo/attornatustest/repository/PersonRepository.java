@@ -12,4 +12,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Modifying
     @Query("update Person p set p.mainAddress = null where p.id = :personId")
     void removeMainAddressByPersonId(@Param("personId") Long personId);
+
+    @Modifying
+    @Query("update Person p set p.mainAddress = null where p.mainAddress.id = :addressId")
+    void removeMainAddressByAddressId(@Param("addressId") Long addressId);
 }
